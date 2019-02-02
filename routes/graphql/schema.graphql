@@ -1,0 +1,45 @@
+"""This is a custom built-in Scalar type from LightHouse. It handles Carbon dates"""
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+    posts: [Post] @hasMany
+}
+
+type Post {
+    id: ID!
+    title: String!
+    content: String!
+    user: User! @belongsTo
+    comments: [Comment] @hasMany
+}
+
+type Comment {
+    id: ID!
+    reply: String!
+    post: Post! @belongsTo
+}
+
+type Query {
+    posts: [Post] @all
+    post (id: Int! @eq): Post @find
+    users: [User] @all
+    user (id: Int! @eq): User @find
+    latestPost: Post!
+}
+
+type Mutation {
+    createUser(
+        name: String! @rules(apply: ["required", "min:4"]),
+        email: String! @rules(apply: ["email", "unique:users"]),
+        password: String! @rules(apply: ["min:4"]) @bcrypt
+    ): User! @create
+}
+
+
+
