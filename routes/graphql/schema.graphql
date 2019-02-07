@@ -31,6 +31,7 @@ type Query {
     users: [User] @all
     user (id: Int! @eq): User @find
     latestPost: Post!
+    me: User @middleware(checks:["auth:api"]) @auth
 }
 
 type Mutation {
